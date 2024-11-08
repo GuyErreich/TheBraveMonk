@@ -14,6 +14,9 @@ jobs:
     runs-on: ubuntu-latest  # Use a GitHub-hosted runner
     container:
       image: ghcr.io/epicgames/unreal-engine:dev-5.4.4  # Pulls your Unreal image from GHCR
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.ghcr_access_token }}
 
     steps:
       - name: Checkout code
