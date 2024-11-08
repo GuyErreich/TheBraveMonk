@@ -12,11 +12,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest  # Use a GitHub-hosted runner
+    permissions: read-all
     container:
       image: ghcr.io/epicgames/unreal-engine:dev-5.4.4  # Pulls your Unreal image from GHCR
       credentials:
         username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        password: ${{ secrets.GHCR_ACCESS_TOKEN }}
 
     steps:
       - name: Checkout code
