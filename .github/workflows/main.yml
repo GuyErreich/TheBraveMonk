@@ -1,0 +1,16 @@
+name: Build and Test Unreal Project
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Use a GitHub-hosted runner
+    container:
+      image: ghcr.io/epicgames/unreal-engine:dev-5.4.4  # Pulls your Unreal image from GHCR
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
