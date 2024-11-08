@@ -16,7 +16,7 @@ jobs:
       image: ghcr.io/epicgames/unreal-engine:dev-5.4.4  # Pulls your Unreal image from GHCR
       credentials:
         username: ${{ github.actor }}
-        password: ${{ secrets.ghcr_access_token }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout code
