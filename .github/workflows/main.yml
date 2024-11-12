@@ -20,7 +20,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: GitHubActionsECSUpdateRole
+          role-to-assume: arn:aws:iam::961341519925:role/GitHubActionsECSUpdateRole
           aws-region: eu-central-1
 
       - name: Update ECS service desired count
