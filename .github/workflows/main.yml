@@ -6,8 +6,6 @@ on:
       - main
   workflow_dispatch:
     
-    
-    
 
 jobs:
   start_ecs_service:
@@ -26,8 +24,8 @@ jobs:
       - name: Update ECS service desired count
         run: |
           aws ecs update-service \
-            --cluster <your-cluster-name> \
-            --service <your-service-name> \
+            --cluster fargate_cluster \
+            --service unreal_engine \
             --desired-count 1
   # build:
   #   runs-on: ubuntu-latest  # Use a GitHub-hosted runner
