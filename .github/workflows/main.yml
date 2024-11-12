@@ -13,14 +13,14 @@ jobs:
   start_ecs_service:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write  # Required for OIDC authentication
+      id-token: write
       contents: read
 
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::961341519925:role/GitHubActionsECSUpdateRole
+          role-to-assume: GitHubActionsECSUpdateRole
           aws-region: eu-central-1
 
       - name: Update ECS service desired count
