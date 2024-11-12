@@ -10,15 +10,34 @@ on:
     
 
 jobs:
-  build:
-    runs-on: ubuntu-latest  # Use a GitHub-hosted runner
-    permissions: read-all
-    container:
-      image: ghcr.io/epicgames/unreal-engine:dev-5.4.4  # Pulls your Unreal image from GHCR
-      credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GHCR_ACCESS_TOKEN }}
+  start_ecs_service:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # Required for OIDC authentication
+      contents: read
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::<account_id>:role/GitHubActionsECSUpdateRole
+          aws-region: <your-aws-region>
+
+      - name: Update ECS service desired count
+        run: |
+          aws ecs update-service \
+            --cluster <your-cluster-name> \
+            --service <your-service-name> \
+            --desired-count 1
+  # build:
+  #   runs-on: ubuntu-latest  # Use a GitHub-hosted runner
+  #   permissions: read-all
+  #   container:
+  #     image: ghcr.io/epicgames/unreal-engine:dev-5.4.4  # Pulls your Unreal image from GHCR
+  #     credentials:
+  #       username: ${{ github.actor }}
+  #       password: ${{ secrets.GHCR_ACCESS_TOKEN }}
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
