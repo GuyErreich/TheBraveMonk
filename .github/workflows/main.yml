@@ -37,18 +37,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
-        with:
-          region: eu-central-1 # Specify your region
+      - name: Hello World
+        run: echo 'Hello World!'
+        
       # - name: Configure AWS credentials
       #   uses: aws-actions/configure-aws-credentials@v4
       #   with:
       #     role-to-assume: arn:aws:iam::961341519925:role/GitHubActionsECSUpdateRole
       #     aws-region: eu-central-1
 
-      - name: Run container from ECR
-        uses: docker://961341519925.dkr.ecr.eu-central-1.amazonaws.com/ci_cd/unreal_engine:automation-5.4.4
-        with:
-          entrypoint: "bash"  # Optional: if you want to override the default entrypoint
+      # - name: Run container from ECR
+      #   uses: docker://961341519925.dkr.ecr.eu-central-1.amazonaws.com/ci_cd/unreal_engine:automation-5.4.4
+      #   with:
+      #     entrypoint: "bash"  # Optional: if you want to override the default entrypoint
           # args: "<your-commands>"
