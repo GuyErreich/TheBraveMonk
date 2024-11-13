@@ -24,7 +24,7 @@ jobs:
       - name: Update ECS service desired count
         run: |
           aws ecs update-service \
-            --cluster fargate_cluster \
+            --cluster fargate-cluster \
             --service unreal_engine \
             --desired-count 1
   # build:
