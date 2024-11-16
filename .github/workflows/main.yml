@@ -27,11 +27,12 @@ jobs:
             --cluster fargate-cluster \
             --service unreal_engine \
             --desired-count 1
+  
   build:
     runs-on: [self-hosted, linux]  # Use a GitHub-hosted runner
-    # permissions: read-all
-    # container:
-    #   image: 961341519925.dkr.ecr.eu-central-1.amazonaws.com/ci_cd/unreal_engine:automation-5.4.4  # Pulls your Unreal image from GHCR
+    permissions: read-all
+    container:
+      image: 961341519925.dkr.ecr.eu-central-1.amazonaws.com/ci_cd/unreal_engine:automation-5.4.4  # Pulls your Unreal image from GHCR
   
     steps:
       - name: Checkout code
@@ -40,14 +41,5 @@ jobs:
       - name: Hello World
         run: echo 'Hello World!'
         
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v4
-      #   with:
-      #     role-to-assume: arn:aws:iam::961341519925:role/GitHubActionsECSUpdateRole
-      #     aws-region: eu-central-1
-
-      # - name: Run container from ECR
-      #   uses: docker://961341519925.dkr.ecr.eu-central-1.amazonaws.com/ci_cd/unreal_engine:automation-5.4.4
-      #   with:
-      #     entrypoint: "bash"  # Optional: if you want to override the default entrypoint
-          # args: "<your-commands>"
+      - name: Show unreal engine folder
+        run: ll
