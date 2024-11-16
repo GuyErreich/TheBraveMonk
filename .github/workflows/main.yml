@@ -45,10 +45,10 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::961341519925:role/GitHubActionsECRRole
           aws-region: ${{ env.AWS_REGION }}
-      - name: Get pw and update secret
+      - name: Get pw and update secret ${{ github. }}
         run: |
           export ECR_PW=`aws ecr get-login-password --region ${{ env.AWS_REGION }} --output text`
-          gh secret set AWS_ECR_PW --org ${{ github.repository_owner }}/${{ github.repository }} --visibility all --body "$ECR_PW"
+          gh secret set AWS_ECR_PW --repo ${{ github.repository }} --visibility all --body "$ECR_PW"
 
       
   build:
