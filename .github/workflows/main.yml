@@ -48,7 +48,7 @@ jobs:
       - name: Get pw and update secret ${{ github. }}
         run: |
           export ECR_PW=`aws ecr get-login-password --region ${{ env.AWS_REGION }} --output text`
-          gh secret set AWS_ECR_PW --repo ${{ github.repository }} --visibility all --body "$ECR_PW"
+          gh secret set AWS_ECR_PW --repo ${{ github.repository }} --body "$ECR_PW"
 
       
   build:
