@@ -36,9 +36,9 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    # env:
-    #   # need an Github Access token with Admin access to update secret
-    #   GH_TOKEN: ${{ secrets.GH_CLI }}
+    env:
+      # need an Github Access token with Admin access to update secret
+      GH_TOKEN: ${{ github.token }}
     steps:
       # - uses: actions/checkout@v3
       - uses: aws-actions/configure-aws-credentials@v4
