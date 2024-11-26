@@ -44,5 +44,5 @@ jobs:
       - name: Show unreal engine folder
         run: ls -la
 
-      - name: Build prohject
-        run: task build
+      - name: Build project
+        run: task -d /app build
