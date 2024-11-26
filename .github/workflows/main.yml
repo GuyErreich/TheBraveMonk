@@ -42,7 +42,7 @@ jobs:
         run: echo 'Hello World!'
         
       - name: Show unreal engine folder
-        run: ll
+        run: ls -la
 
       - name: Build prohject
         run: task build
