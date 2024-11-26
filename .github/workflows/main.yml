@@ -28,39 +28,12 @@ jobs:
             --cluster fargate-cluster \
             --service unreal_engine \
             --desired-count 1
-
-            
-  update-ecr-pw:
-    runs-on: ubuntu-latest
-    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
-    permissions:
-      id-token: write
-      contents: read
-    env:
-      # need an Github Access token with Admin access to update secret
-      GH_TOKEN: ${{ secrets.ACTIONS_BASIC_TOKEN }}
-    steps:
-      # - uses: actions/checkout@v3
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::961341519925:role/GitHubActionsECRRole
-          aws-region: ${{ env.AWS_REGION }}
-      - name: Get pw and update secret
-        run: |
-          export ECR_PW=`aws ecr get-login-password --region ${{ env.AWS_REGION }} --output text`
-          gh secret set AWS_ECR_PW --repo ${{ github.repository }} --body "$ECR_PW"
-
       
   build:
     runs-on: [self-hosted, linux]  # Use a GitHub-hosted runner
-    needs: [start_ecs_service, update-ecr-pw]
+    needs: [start_ecs_service]
     permissions: read-all
-    container:
-      image: 961341519925.dkr.ecr.eu-central-1.amazonaws.com/ci_cd/unreal_engine:automation-5.4.4  # Pulls your Unreal image from GHCR
-      credentials:
-        username: AWS
-        password: ${{ secrets.AWS_ECR_PW }}
-  
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -70,3 +43,6 @@ jobs:
         
       - name: Show unreal engine folder
         run: ll
+
+      - name: Build prohject
+        run: task build
