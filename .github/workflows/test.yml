@@ -1,0 +1,22 @@
+name: Build and Test Unreal Project
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  AWS_REGION: eu-central-1
+  
+jobs:
+  build:
+      runs-on: [self-hosted, linux]  # Use a GitHub-hosted runner
+      permissions: read-all
+      
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+  
+        - name: show env
+          run: env
