@@ -11,7 +11,7 @@ env:
   
 jobs:
   build:
-      runs-on: [self-hosted, linux]  # Use a GitHub-hosted runner
+      runs-on: [self-hosted, ue]  # Use a GitHub-hosted runner
       permissions: read-all
       
       steps:
