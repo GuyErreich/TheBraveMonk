@@ -32,7 +32,7 @@ jobs:
           echo "::set-output name=desired_count::$desired_count"
 
       - name: Update ECS service desired count
-        if: steps.check_desired_count.outputs.desired_count | int < 1
+        if: steps.check_desired_count.outputs.desired_count < 1
         run: |
           aws ecs update-service \
             --cluster fargate-cluster \
