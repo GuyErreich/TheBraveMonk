@@ -22,7 +22,8 @@ jobs:
           role-to-assume: arn:aws:iam::961341519925:role/GitHubActionsECSUpdateRole
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: check
+      - name: Check desired count
+        id: check_desired_count
         run: |
           desired_count=$(aws ecs describe-services \
           --cluster fargate-cluster \
@@ -30,6 +31,7 @@ jobs:
           | jq ".services[] | select(.serviceName == \"unreal_engine\") | .desiredCount")
           echo "Desired count is $desired_count"
           echo "desired_count=$desired_count" >> $GITHUB_OUTPUT
+        
 
       - name: Update ECS service desired count
         if: steps.check_desired_count.outputs.desired_count < 1
