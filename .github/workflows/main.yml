@@ -65,6 +65,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
+    needs: [build]
     if: always()
     steps:
       - name: Configure AWS credentials
