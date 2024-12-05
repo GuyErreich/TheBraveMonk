@@ -22,7 +22,17 @@ jobs:
           role-to-assume: arn:aws:iam::961341519925:role/GitHubActionsECSUpdateRole
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: check
+        run: |
+          aws ecs describe-services \
+          --cluster fargate-cluster \
+          --services unreal_engine \
+          | jq ".services[] | select(.serviceName == \"unreal_engine\") | .desiredCount"
+          echo "Desired count is $desired_count"
+          echo "::set-output name=desired_count::$desired_count"
+
       - name: Update ECS service desired count
+        if: steps.check_desired_count.outputs.desired_count | int < 1
         run: |
           aws ecs update-service \
             --cluster fargate-cluster \
