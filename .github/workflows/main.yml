@@ -22,8 +22,18 @@ jobs:
           role-to-assume: arn:aws:iam::961341519925:role/GitHubActionsECSUpdateRole
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Check Runner Availability
+        id: check_runner_availability
+        run: |
+          available=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            https://api.github.com/repos/${{ github.repository }}/actions/runners \
+            | jq '.runners[] | select(.labels[].name == "self-hosted, linux, ue")')
+          echo "There are available runner: $available"
+          echo "available=$( [[ -n "$available" ]] && echo true || echo false )" >> $GITHUB_OUTPUT
+
       - name: Check desired count
         id: check_desired_count
+        if: ${{ ! steps.check_runner_availability.outputs.available }}
         run: |
           desired_count=$(aws ecs describe-services \
           --cluster fargate-cluster \
@@ -34,12 +44,13 @@ jobs:
         
 
       - name: Update ECS service desired count
-        if: steps.check_desired_count.outputs.desired_count < 1
+        if: ${{ ! steps.check_runner_availability.outputs.available }}
         run: |
+          desired_count=$((${{steps.check_desired_count.outputs.desired_count}} + 1))
           aws ecs update-service \
             --cluster fargate-cluster \
             --service unreal_engine \
-            --desired-count 1
+            --desired-count $desired_count
       
   build:
     runs-on: [self-hosted, linux]  # Use a GitHub-hosted runner
