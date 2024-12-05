@@ -24,10 +24,10 @@ jobs:
 
       - name: check
         run: |
-          desired_count=aws ecs describe-services \
+          desired_count=$(aws ecs describe-services \
           --cluster fargate-cluster \
           --services unreal_engine \
-          | jq ".services[] | select(.serviceName == \"unreal_engine\") | .desiredCount"
+          | jq ".services[] | select(.serviceName == \"unreal_engine\") | .desiredCount")
           echo "Desired count is $desired_count"
           echo "desired_count=$desired_count" >> $GITHUB_OUTPUT
 
