@@ -64,7 +64,7 @@ jobs:
       #   run: task -d $HOME build
 
   stop_ecs_task:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     permissions:
       id-token: write
       contents: read
@@ -89,7 +89,8 @@ jobs:
 
       - name: Stop current runner task
         run: |
-          echo ${{ env.TASK_ID }}
+          echo "task_1: ${{ env.TASK_ID }}"
+          echo "task_1: $TASK_ID"
         # aws ecs stop-task \
         #   --cluster fargate-cluster \
         #   --task $TASK_ID \
