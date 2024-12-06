@@ -89,6 +89,8 @@ jobs:
 
       - name: Stop current runner task
         run: |
+          TASK_METADATA=$(curl -s "$ECS_CONTAINER_METADATA_URI_V4/task")
+          TASK_ID=$(echo "$TASK_METADATA" | jq -r '.TaskARN' | awk -F'/' '{print $3}')
           echo "task_1: ${{ env.TASK_ID }}"
           echo "task_1: $TASK_ID"
         # aws ecs stop-task \
