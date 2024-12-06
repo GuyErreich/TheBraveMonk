@@ -84,17 +84,7 @@ jobs:
           --services unreal_engine \
           | jq ".services[] | select(.serviceName == \"unreal_engine\") | .desiredCount")
           echo "Desired count is $desired_count"
-          echo "desired_count=$desired_count" >> $GITHUB_OUTPUT
-        
-      - name: Update desired count
-        run: |
-          desired_count=$((${{steps.check_desired_count.outputs.desired_count}} - 1))
-          aws ecs update-service \
-            --cluster fargate-cluster \
-            --service unreal_engine \
-            --desired-count $desired_count \
-            > /dev/null 2>&1
-          echo "New desired count is $desired_count"
+          echo "desired_count=$desired_count" >> $GITHUB_OUTPUT      
 
       - name: Stop current runner task
         run: |
@@ -105,3 +95,13 @@ jobs:
             --cluster fargate-cluster \                                                                                                                                   ─╯
             --task $TASK_ID \
             --reason "GitHub action has finished with status: ${{ env.Status }}"
+        
+      - name: Update desired count
+        run: |
+          desired_count=$((${{steps.check_desired_count.outputs.desired_count}} - 1))
+          aws ecs update-service \
+            --cluster fargate-cluster \
+            --service unreal_engine \
+            --desired-count $desired_count \
+            > /dev/null 2>&1
+          echo "New desired count is $desired_count"
