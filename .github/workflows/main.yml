@@ -35,13 +35,14 @@ jobs:
 
       - name: Update desired count
         run: |
-          desired_count=${{ steps.check_desired_count.outputs.desired_count + 1 }}
+          desired_count=${{ steps.check_desired_count.outputs.desired_count }}
+          incremented_count=$((desired_count + 1))
           aws ecs update-service \
             --cluster fargate-cluster \
             --service unreal_engine \
             --desired-count $desired_count \
             > /dev/null 2>&1
-          echo "New desired count is $desired_count"
+          echo "New desired count is $incremented_count"
       
   build:
     runs-on: [self-hosted, linux]  # Use a GitHub-hosted runner
@@ -98,10 +99,11 @@ jobs:
         
       - name: Update desired count
         run: |
-          desired_count=$((${{steps.check_desired_count.outputs.desired_count}} - 1))
+          desired_count=${{ steps.check_desired_count.outputs.desired_count }}
+          decremented_count=$((desired_count + 1))
           aws ecs update-service \
             --cluster fargate-cluster \
             --service unreal_engine \
             --desired-count $desired_count \
             > /dev/null 2>&1
-          echo "New desired count is $desired_count"
+          echo "New desired count is $decremented_count"
