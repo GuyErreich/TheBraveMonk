@@ -89,19 +89,19 @@ jobs:
 
       - name: Stop current runner task
         run: |
-          echo $TASK_ID
+          echo ${{ env.TASK_ID }}
         # aws ecs stop-task \
         #   --cluster fargate-cluster \
         #   --task $TASK_ID \
         #   --reason "GitHub action has finished with status: ${{ env.Status }}"
         
-      - name: Update desired count
-        run: |
-          desired_count=${{ steps.check_desired_count.outputs.desired_count }}
-          decremented_count=$((desired_count + 1))
-          aws ecs update-service \
-            --cluster fargate-cluster \
-            --service unreal_engine \
-            --desired-count $desired_count \
-            > /dev/null 2>&1
-          echo "New desired count is $decremented_count"
+      # - name: Update desired count
+      #   run: |
+      #     desired_count=${{ steps.check_desired_count.outputs.desired_count }}
+      #     decremented_count=$((desired_count + 1))
+      #     aws ecs update-service \
+      #       --cluster fargate-cluster \
+      #       --service unreal_engine \
+      #       --desired-count $desired_count \
+      #       > /dev/null 2>&1
+      #     echo "New desired count is $decremented_count"
