@@ -40,7 +40,7 @@ jobs:
           aws ecs update-service \
             --cluster fargate-cluster \
             --service unreal_engine \
-            --desired-count $desired_count \
+            --desired-count $incremented_count \
             > /dev/null 2>&1
           echo "New desired count is $incremented_count"
       
