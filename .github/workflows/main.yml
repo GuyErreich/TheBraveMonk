@@ -48,8 +48,6 @@ jobs:
     runs-on: [self-hosted, linux]  # Use a GitHub-hosted runner
     needs: [start_ecs_task]
     permissions: read-all
-    outputs:
-      task_id: ${{ steps.step1.outputs.test }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -63,12 +61,31 @@ jobs:
       # - name: Build project
       #   run: task -d $HOME build
 
-  stop_ecs_task:
+          
+  get_ecs_task:
     runs-on: [self-hosted, linux]
+    outputs:
+      task_id: ${{ steps.get_task_id.outputs.task_id }}
     permissions:
       id-token: write
       contents: read
     needs: [build]
+    if: always()
+    steps:
+      - name: Get task ID
+        id: get_task_id
+        run: |
+          TASK_METADATA=$(curl -s "$ECS_CONTAINER_METADATA_URI_V4/task")
+          TASK_ID=$(echo "$TASK_METADATA" | jq -r '.TaskARN' | awk -F'/' '{print $3}')
+          echo "Task ID: $TASK_ID"
+          echo "task_id=$TASK_ID" >> $GITHUB_OUTPUT
+
+  stop_ecs_task:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    needs: [get_ecs_task]
     if: always()
     steps:
       - name: Configure AWS credentials
@@ -85,16 +102,15 @@ jobs:
           --services unreal_engine \
           | jq ".services[] | select(.serviceName == \"unreal_engine\") | .desiredCount")
           echo "Desired count is $desired_count"
-          echo "desired_count=$desired_count" >> $GITHUB_OUTPUT      
-
-      - name: Stop current runner task
+          echo "desired_count=$desired_count" >> $GITHUB_OUTPUT
+          
+      - name: Get task ID
         run: |
-          TASK_METADATA=$(curl -s "$ECS_CONTAINER_METADATA_URI_V4/task")
-          TASK_ID=$(echo "$TASK_METADATA" | jq -r '.TaskARN' | awk -F'/' '{print $3}')
+          task_id=${{ jobs.get_ecs_task.outputs.task_id }}
           aws ecs stop-task \
             --cluster fargate-cluster \
-            --task $TASK_ID \
-            --reason "GitHub action has finished with status: ${{ env.Status }}"
+            --task $task_id \
+            --reason "GitHub action has finished with status: ${{ env.status }}"
           echo "Stopping task: $TASK_ID"
         
       - name: Update desired count
