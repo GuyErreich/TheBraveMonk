@@ -104,7 +104,7 @@ jobs:
           echo "Desired count is $desired_count"
           echo "desired_count=$desired_count" >> $GITHUB_OUTPUT
           
-      - name: Get task ID
+      - name: Stop current task
         run: |
           task_id=${{ needs.get_ecs_task.outputs.task_id }}
           aws ecs stop-task \
