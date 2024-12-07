@@ -106,7 +106,7 @@ jobs:
           
       - name: Get task ID
         run: |
-          task_id=${{ jobs.get_ecs_task.outputs.task_id }}
+          task_id=${{ needs.get_ecs_task.outputs.task_id }}
           aws ecs stop-task \
             --cluster fargate-cluster \
             --task $task_id \
