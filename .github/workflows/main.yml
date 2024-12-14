@@ -2,8 +2,7 @@ name: Build and Test Unreal Project
 
 on:
   push:
-    branches:
-      - main
+  pull_request:    
   workflow_dispatch:
 
 env:
@@ -11,6 +10,7 @@ env:
   
 jobs:
   start_ecs_task:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     permissions:
       id-token: write
