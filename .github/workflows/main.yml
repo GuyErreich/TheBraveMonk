@@ -46,7 +46,7 @@ jobs:
       
   build:
     runs-on: [self-hosted, linux]  # Use a GitHub-hosted runner
-    needs: ${{ github.event_name == 'workflow_dispatch' && 'start_ecs_task' || '' }} 
+    needs: ${{ github.event_name == 'workflow_dispatch' && 'start_ecs_task' || '[]' }}  
     permissions: read-all
     steps:
       - name: Checkout code
