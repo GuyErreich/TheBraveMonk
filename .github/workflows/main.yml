@@ -57,10 +57,13 @@ jobs:
           # lfs: true
 
       - name: Hello World
-        run: echo 'Hello World! 2'
+        run: echo 'Hello World!'
         
       - name: Show unreal engine folder
         run: ls -la
 
       - name: Build project
-        run: task -d $HOME build
+        run: task -d $HOME clean build
+
+
+  
