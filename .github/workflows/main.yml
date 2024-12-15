@@ -56,7 +56,7 @@ jobs:
           clean: true
 
       - name: Hello World
-        run: echo 'Hello World! 3'
+        run: echo 'Hello World!'
         
       - name: Show unreal engine folder
         run: ls -la
