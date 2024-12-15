@@ -54,7 +54,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Hello World
-        run: echo 'Hello World! 2'
+        run: echo 'Hello World!'
         
       - name: Show unreal engine folder
         run: ls -la
