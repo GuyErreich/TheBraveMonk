@@ -24,8 +24,21 @@ jobs:
           aws_role_to_assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GitHubActionsSecretManagerRole
           secret_name: github/webhook_token
           content_type: application/json
-          headers: '{"X-GitHub-Event": "push"}'
-          payload: '{"message": "Hello, world!"}'
+          headers: |
+            {
+              "X-GitHub-Event": "${{ github.event_name }}"
+            }
+          payload: |
+            {
+              "repository": "${{ github.repository }}",
+              "actor": "${{ github.actor }}",
+              "event": "${{ github.event_name }}",
+              "commit_sha": "${{ github.sha }}",
+              "branch": "${{ github.ref }}",
+              "workflow": "${{ github.workflow }}",
+              "run_id": "${{ github.run_id }}",
+              "event_data": ${{ toJson(github.event) }}
+            }
       
   # build:
   #   runs-on: [self-hosted, linux]  # Use a GitHub-hosted runner
