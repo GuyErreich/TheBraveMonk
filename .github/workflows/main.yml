@@ -16,54 +16,37 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Send Webhook to AWS
+        uses: your-repo/aws-send-webhook-action@v1
         with:
-          role-to-assume: arn:aws:iam::961341519925:role/GitHubActionsECSUpdateRole
-          aws-region: ${{ env.AWS_REGION }}
-          
-      - name: Get current desired count
-        id: check_desired_count
-        run: |
-          desired_count=$(aws ecs describe-services \
-          --cluster fargate-cluster \
-          --services unreal_engine \
-          | jq ".services[] | select(.serviceName == \"unreal_engine\") | .desiredCount")
-          echo "Desired count is $desired_count"
-          echo "desired_count=$desired_count" >> $GITHUB_OUTPUT
-        
-
-      - name: Update desired count
-        run: |
-          desired_count=${{ steps.check_desired_count.outputs.desired_count }}
-          incremented_count=$((desired_count + 1))
-          aws ecs update-service \
-            --cluster fargate-cluster \
-            --service unreal_engine \
-            --desired-count $incremented_count \
-            > /dev/null 2>&1
-          echo "New desired count is $incremented_count"
+          webhook_url: ${{ secrets.WEBHOOK_URL }}
+          aws_region: us-east-1
+          aws_role_to_assume: arn:aws:iam::961341519925:role/GitHubActionsSecretManagerRole
+          secret_name: github/webhook_token
+          content_type: application/json
+          headers: '{"X-GitHub-Event": "push"}'
+          payload: '{"message": "Hello, world!"}'
       
-  build:
-    runs-on: [self-hosted, linux]  # Use a GitHub-hosted runner
-    needs: [start_ecs_task]
-    if: ${{ github.event_name == 'push' || always() }}
-    permissions: read-all
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          clean: true
-          # lfs: true
+  # build:
+  #   runs-on: [self-hosted, linux]  # Use a GitHub-hosted runner
+  #   needs: [start_ecs_task]
+  #   if: ${{ github.event_name == 'push' || always() }}
+  #   permissions: read-all
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #       with:
+  #         clean: true
+  #         # lfs: true
 
-      - name: Hello World
-        run: echo 'Hello World!'
+  #     - name: Hello World
+  #       run: echo 'Hello World!'
         
-      - name: Show unreal engine folder
-        run: ls -la
+  #     - name: Show unreal engine folder
+  #       run: ls -la
 
-      - name: Build project
-        run: task -d $HOME clean build
+  #     - name: Build project
+  #       run: task -d $HOME clean build
 
 
   
