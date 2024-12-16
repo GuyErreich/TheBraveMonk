@@ -21,7 +21,7 @@ jobs:
         with:
           webhook_url: ${{ secrets.WEBHOOK_URL }}
           aws_region: ${{ env.AWS_REGION }}
-          aws_role_to_assume: arn:aws:iam:${{ env.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:role/GitHubActionsSecretManagerRole
+          aws_role_to_assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GitHubActionsSecretManagerRole
           secret_name: github/webhook_token
           content_type: application/json
           headers: '{"X-GitHub-Event": "push"}'
