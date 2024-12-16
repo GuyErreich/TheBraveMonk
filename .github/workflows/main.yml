@@ -17,7 +17,7 @@ jobs:
       contents: read
     steps:
       - name: Send Webhook to AWS
-        uses: your-repo/aws-send-webhook-action@v1
+        uses: GuyErreich/Send-Webhook@v0.0.2
         with:
           webhook_url: ${{ secrets.WEBHOOK_URL }}
           aws_region: us-east-1
