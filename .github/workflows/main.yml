@@ -10,7 +10,6 @@ env:
   
 jobs:
   start_ecs_task:
-    if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -40,26 +39,25 @@ jobs:
               "event_data": ${{ toJson(github.event) }}
             }
       
-  # build:
-  #   runs-on: [self-hosted, linux]  # Use a GitHub-hosted runner
-  #   needs: [start_ecs_task]
-  #   if: ${{ github.event_name == 'push' || always() }}
-  #   permissions: read-all
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-  #       with:
-  #         clean: true
-  #         # lfs: true
+  build:
+    runs-on: [self-hosted, linux]  # Use a GitHub-hosted runner
+    needs: [start_ecs_task]
+    permissions: read-all
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          clean: true
+          # lfs: true
 
-  #     - name: Hello World
-  #       run: echo 'Hello World!'
+      - name: Hello World
+        run: echo 'Hello World!'
         
-  #     - name: Show unreal engine folder
-  #       run: ls -la
+      - name: Show unreal engine folder
+        run: ls -la
 
-  #     - name: Build project
-  #       run: task -d $HOME clean build
+      - name: Build project
+        run: task -d $HOME clean build
 
 
   
