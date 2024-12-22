@@ -1,0 +1,40 @@
+name: test
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  AWS_REGION: eu-central-1
+  
+jobs:
+  start_ecs_service:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::961341519925:role/GitHubActionsECSUpdateRole
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Update ECS service desired count
+        run: |
+          aws ecs update-service \
+            --cluster fargate-cluster \
+            --service unreal_engine \
+            --desired-count 1
+  build:
+      runs-on: [self-hosted, ue]  # Use a GitHub-hosted runner
+      permissions: read-all
+      
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+  
+        - name: show env
+          run: env

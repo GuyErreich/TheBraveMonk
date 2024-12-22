@@ -2,19 +2,62 @@ name: Build and Test Unreal Project
 
 on:
   push:
-    branches:
-      - main
+  pull_request:    
   workflow_dispatch:
-    
-    
-    
 
+env:
+  AWS_REGION: eu-central-1
+  
 jobs:
+  start_ecs_task:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Send Webhook to AWS
+        uses: GuyErreich/Send-Webhook@v1.0.1
+        with:
+          webhook_url: ${{ secrets.WEBHOOK_URL }}
+          aws_region: ${{ env.AWS_REGION }}
+          aws_role_to_assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GitHubActionsSecretManagerRole
+          secret_name: github/webhook_token
+          content_type: application/json
+          headers: |
+            {
+              "X-GitHub-Event": "${{ github.event_name }}"
+            }
+          payload: |
+            {
+              "repository": "${{ github.repository }}",
+              "actor": "${{ github.actor }}",
+              "event": "${{ github.event_name }}",
+              "commit_sha": "${{ github.sha }}",
+              "branch": "${{ github.ref }}",
+              "workflow": "${{ github.workflow }}",
+              "run_id": "${{ github.run_id }}",
+              "event_data": ${{ toJson(github.event) }}
+            }
+      
   build:
-    runs-on: ubuntu-latest  # Use a GitHub-hosted runner
-    container:
-      image: ghcr.io/epicgames/unreal-engine:dev-5.4.4  # Pulls your Unreal image from GHCR
-
+    runs-on: [self-hosted, linux]  # Use a GitHub-hosted runner
+    needs: [start_ecs_task]
+    permissions: read-all
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          clean: true
+          # lfs: true
+
+      - name: Hello World
+        run: echo 'Hello World!'
+        
+      - name: Show unreal engine folder
+        run: ls -la
+
+      - name: Build project
+        run: task -d $HOME clean build
+
+
+  
